@@ -1,0 +1,27 @@
+.tooltip {
+    z-index: 1;
+    overflow: hidden;
+    transform: translateX(-50%);
+        &.left {
+        transform: translateX(0%);
+    }
+    &.right {
+        transform: translateX(-100%);
+    }
+}
+.tip {
+    position: relative;
+    width: 20px;
+    background-color: whitesmoke;
+    height: 20px;
+    left: 50%;
+    transform: translate(-50%, 50%) rotate(-45deg);
+    z-index: 1000;
+    &.left {
+        left: 0%;
+    }
+
+    &.right {
+        left: 100%;
+    }
+}
