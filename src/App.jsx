@@ -35,14 +35,15 @@ function App() {
     <div>
       {TestCases.map((bookingData) => {
         return (
-          <div className="mt-10">
+          <div className="mt-10 w-screen md:w-[50vw] mx-auto">
             <div>
               <LineChart
+                key={bookingData[0].category}
                 datasets={bookingData}
                 height="800"
                 width="1200"
                 precision="0"
-                // numberOfVerticalGuides={bookingData.length - 1}
+              // numberOfVerticalGuides={bookingData.length - 1}
               />
             </div>
           </div>

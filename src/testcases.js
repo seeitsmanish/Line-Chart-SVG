@@ -253,7 +253,7 @@ const TestCases = [
       category: '30 days data'
     }
   ],
-  
+
   // 90 days data
   [
     {
@@ -350,7 +350,7 @@ const TestCases = [
         { "label": "29-Oct", "x": 89, "y": 67 }
       ],
       color: 'pink',
-      category: '90 days data'      
+      category: '90 days data'
     }
   ],
 
@@ -422,9 +422,79 @@ const TestCases = [
       "color": "#9400D3",
       "category": "Category E"
     }
+  ],
+
+  // Same Data
+
+  [
+    {
+      "data": [
+        { "label": "01-Aug", "x": 0, "y": 100 },
+        { "label": "02-Aug", "x": 1, "y": 150 },
+        { "label": "03-Aug", "x": 2, "y": 200 },
+        { "label": "04-Aug", "x": 3, "y": 250 },
+        { "label": "05-Aug", "x": 4, "y": 300 },
+        { "label": "06-Aug", "x": 5, "y": 350 },
+        { "label": "07-Aug", "x": 6, "y": 400 }
+      ],
+      "color": "#FF6347",
+      "category": "Category A"
+    },
+    {
+      "data": [
+        { "label": "01-Aug", "x": 0, "y": 100 },
+        { "label": "02-Aug", "x": 1, "y": 150 },
+        { "label": "03-Aug", "x": 2, "y": 200 },
+        { "label": "04-Aug", "x": 3, "y": 250 },
+        { "label": "05-Aug", "x": 4, "y": 300 },
+        { "label": "06-Aug", "x": 5, "y": 350 },
+        { "label": "07-Aug", "x": 6, "y": 400 }
+      ],
+      "color": "#4682B4",
+      "category": "Category B"
+    },
+    {
+      "data": [
+        { "label": "01-Aug", "x": 0, "y": 100 },
+        { "label": "02-Aug", "x": 1, "y": 150 },
+        { "label": "03-Aug", "x": 2, "y": 200 },
+        { "label": "04-Aug", "x": 3, "y": 250 },
+        { "label": "05-Aug", "x": 4, "y": 300 },
+        { "label": "06-Aug", "x": 5, "y": 350 },
+        { "label": "07-Aug", "x": 6, "y": 400 }
+      ],
+      "color": "#32CD32",
+      "category": "Category C"
+    },
+    {
+      "data": [
+        { "label": "01-Aug", "x": 0, "y": 100 },
+        { "label": "02-Aug", "x": 1, "y": 150 },
+        { "label": "03-Aug", "x": 2, "y": 200 },
+        { "label": "04-Aug", "x": 3, "y": 250 },
+        { "label": "05-Aug", "x": 4, "y": 300 },
+        { "label": "06-Aug", "x": 5, "y": 350 },
+        { "label": "07-Aug", "x": 6, "y": 400 }
+      ],
+      "color": "#FFD700",
+      "category": "Category D"
+    },
+    {
+      "data": [
+        { "label": "01-Aug", "x": 0, "y": 100 },
+        { "label": "02-Aug", "x": 1, "y": 150 },
+        { "label": "03-Aug", "x": 2, "y": 200 },
+        { "label": "04-Aug", "x": 3, "y": 250 },
+        { "label": "05-Aug", "x": 4, "y": 300 },
+        { "label": "06-Aug", "x": 5, "y": 350 },
+        { "label": "07-Aug", "x": 6, "y": 400 }
+      ],
+      "color": "#9400D3",
+      "category": "Category E"
+    }
   ]
-  
-  
+
+
 ];
 
 export default TestCases;

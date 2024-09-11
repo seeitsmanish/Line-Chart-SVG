@@ -1,7 +1,9 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import LineChartStyles from "./LineChart.module.scss";
 import Tooltip from "./Tooltip";
-import useOutsideClick from "./useOutSideClick";
+import { XAxis } from "./Axis";
+import Dot from "./Dot";
+import Line from "./Line";
 export default function LineChart({
   datasets,
   width,
@@ -34,28 +36,7 @@ export default function LineChart({
   const [isFocused, setIsFocused] = useState(false);
   const [currentIndexFocussed, setCurrentIndexFocussed] = useState(null);
 
-  const Axis = ({ points }) => (
-    <polyline
-      points={points}
-      fill="none"
-      stroke="#56566B"
-      strokeDasharray={10}
-      strokeWidth="1"
-    />
-  );
-
-  const XAxis = () => (
-    <Axis
-      points={`${padding},${height - padding} ${width - padding},${height - padding
-        }`}
-    />
-  );
-
   const actualHorizontalGuides = Math.min(numberOfHorizontalGuides || 4, maxYFromData);
-
-  const YAxis = () => (
-    <Axis points={`${padding},${padding} ${padding},${height - padding}`} />
-  );
 
   const HorizontalGuides = () => {
     const startX = padding;
@@ -151,30 +132,24 @@ export default function LineChart({
   const Dots = ({ data, color }) => {
     const numberOfDots = data.length;
     return data.map((el, index) => {
-      const x = (el.x / maxXFromData) * chartWidth + padding;
-      const y = chartHeight - (el.y / maxYFromData) * chartHeight + padding;
-      const dotRef = useRef(null);
-      useOutsideClick(dotRef, () => {
-        setIsFocused(false);
-        setCurrentIndexFocussed(null);
-      });
       return (
-        <circle
-          ref={dotRef}
-          className={LineChartStyles.dot}
-          style={{
-            '--dot-delay': `${(index / numberOfDots) * 1.5}s`,
-          }}
-          data-index={index}
+        <Dot
           key={index}
-          cx={x}
-          cy={y}
-          r={FONT_SIZE / 3} // Increased dot size
-          fill={color}
-          stroke="#000000"
-          strokeWidth="1.5" // Increased border thickness
-          onClick={(e) => {
-            console.log(e);
+          index={index}
+          el={el}
+          color={color}
+          numberOfDots={numberOfDots}
+          maxXFromData={maxXFromData}
+          maxYFromData={maxYFromData}
+          chartWidth={chartWidth}
+          chartHeight={chartHeight}
+          padding={padding}
+          FONT_SIZE={FONT_SIZE}
+          handleClickedOutside={() => {
+            setIsFocused(false);
+            setCurrentIndexFocussed(null);
+          }}
+          handleDotClick={(e) => {
             setIsFocused(true);
             setCurrentIndexFocussed(data[index]);
             setTooltipPosition({
@@ -182,46 +157,29 @@ export default function LineChart({
               y: e.clientY - containerRef.current.getBoundingClientRect().y,
             });
           }}
-        ></circle>
-      );
+        />
+      )
     });
   };
 
-  const Lines = () => {
+  const Lines = useCallback(() => {
     return datasets.map((dataset, index) => {
-      const lineRef = useRef();
-
-      useLayoutEffect(() => {
-        if (!lineRef.current) return;
-        const lineLength = lineRef.current.getTotalLength();
-        console.log(lineLength);
-        lineRef.current.style.strokeDasharray = lineLength;
-        lineRef.current.style.strokeDashoffset = lineLength;
-      }, [lineRef.current])
-
-      const points = dataset.data
-        .map((el) => {
-          const x = (el.x / maxXFromData) * chartWidth + padding;
-          const y = chartHeight - (el.y / maxYFromData) * chartHeight + padding;
-          return `${x},${y}`;
-        })
-        .join(" ");
-
       return (
         <React.Fragment key={index}>
-          <polyline
-            fill="none"
-            ref={lineRef}
-            className={LineChartStyles.graphLine}
-            stroke={dataset.color}
-            points={points}
-            strokeWidth="2" // Increased line thickness
-          />
           <Dots data={dataset.data} color={dataset.color} />
+          <Line
+            key={index}
+            dataset={dataset}
+            maxXFromData={maxXFromData}
+            maxYFromData={maxYFromData}
+            padding={padding}
+            chartWidth={chartWidth}
+            chartHeight={chartHeight}
+          />
         </React.Fragment>
       );
     });
-  };
+  }, [datasets, maxXFromData, maxYFromData, padding, chartWidth, chartHeight]);
 
   const CategoryLabels = () => {
     return (
@@ -259,9 +217,9 @@ export default function LineChart({
   return (
     <div className={LineChartStyles.container} ref={containerRef}>
       <svg viewBox={`0 0 ${width} ${height}`} className={LineChartStyles.chart}>
-        <XAxis />
+        <XAxis padding={padding} height={height} width={width} />
         <XLabels />
-        {/* <YAxis /> */}
+        {/* <YAxis padding={padding} height={height} width={width} />*/}
         <YLabels />
         <HorizontalGuides />
         {numberOfVerticalGuides && <VerticalGuides />}
