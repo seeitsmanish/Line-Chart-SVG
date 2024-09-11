@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import LineChartStyles from "./LineChart.module.scss";
 import Tooltip from "./Tooltip";
 import useOutsideClick from "./useOutSideClick";
@@ -17,11 +17,11 @@ export default function LineChart({
     ...datasets.flatMap((dataset) => dataset.data.map((e) => e.y))
   ));
   const getDivideFactor = () => {
-    if(maxXFromData <= 20) return 30;
-    else if(maxXFromData > 20 && maxXFromData <= 30) return 45;
-    else if(maxXFromData > 30) return 50;
+    if (maxXFromData <= 20) return 30;
+    else if (maxXFromData > 20 && maxXFromData <= 30) return 45;
+    else if (maxXFromData > 30) return 50;
   }
-  const FONT_SIZE = width /getDivideFactor(); // Increased font size for better visibility
+  const FONT_SIZE = width / getDivideFactor(); // Increased font size for better visibility
   const digits = parseFloat(maxYFromData.toString()).toFixed(precision).length;
   const padding = (FONT_SIZE + digits) * 3;
   const chartWidth = width - padding * 2;
@@ -46,9 +46,8 @@ export default function LineChart({
 
   const XAxis = () => (
     <Axis
-      points={`${padding},${height - padding} ${width - padding},${
-        height - padding
-      }`}
+      points={`${padding},${height - padding} ${width - padding},${height - padding
+        }`}
     />
   );
 
@@ -127,8 +126,8 @@ export default function LineChart({
     return datasets[0].data.map((el, index, dataset) => {
       const ratio = el.x / maxXFromData;
       const x = ratio * chartWidth + padding - FONT_SIZE * 2;
-      if(maxXFromData > 30) {
-        if(index%10 !== 0 && index !== maxXFromData){
+      if (maxXFromData > 30) {
+        if (index % 10 !== 0 && index !== maxXFromData) {
           return null;
         }
       }
@@ -141,7 +140,7 @@ export default function LineChart({
             fill: "#56566B",
             fontSize: FONT_SIZE,
           }}
-          transform={`rotate(${dataset.length > 5  ? -45: 0 }, ${x}, ${y})`}
+          transform={`rotate(${dataset.length > 5 ? -45 : 0}, ${x}, ${y})`}
         >
           {el.label}
         </text>
@@ -150,6 +149,7 @@ export default function LineChart({
   };
 
   const Dots = ({ data, color }) => {
+    const numberOfDots = data.length;
     return data.map((el, index) => {
       const x = (el.x / maxXFromData) * chartWidth + padding;
       const y = chartHeight - (el.y / maxYFromData) * chartHeight + padding;
@@ -161,6 +161,10 @@ export default function LineChart({
       return (
         <circle
           ref={dotRef}
+          className={LineChartStyles.dot}
+          style={{
+            '--dot-delay': `${(index / numberOfDots) * 1.5}s`,
+          }}
           data-index={index}
           key={index}
           cx={x}
@@ -185,6 +189,16 @@ export default function LineChart({
 
   const Lines = () => {
     return datasets.map((dataset, index) => {
+      const lineRef = useRef();
+
+      useLayoutEffect(() => {
+        if (!lineRef.current) return;
+        const lineLength = lineRef.current.getTotalLength();
+        console.log(lineLength);
+        lineRef.current.style.strokeDasharray = lineLength;
+        lineRef.current.style.strokeDashoffset = lineLength;
+      }, [lineRef.current])
+
       const points = dataset.data
         .map((el) => {
           const x = (el.x / maxXFromData) * chartWidth + padding;
@@ -197,6 +211,8 @@ export default function LineChart({
         <React.Fragment key={index}>
           <polyline
             fill="none"
+            ref={lineRef}
+            className={LineChartStyles.graphLine}
             stroke={dataset.color}
             points={points}
             strokeWidth="2" // Increased line thickness
@@ -226,19 +242,19 @@ export default function LineChart({
   const TooltipContainer = () => {
     return (
       <div className={LineChartStyles.tooltipContainer}>
-      <p className={LineChartStyles.line}>{currentIndexFocussed.label}</p>
-      <p className={LineChartStyles.date}>
-        <span className={LineChartStyles.bold}>{currentIndexFocussed.y}</span> Bookings
-      </p>
-      <p className={LineChartStyles.line}>
-        <span className={LineChartStyles.bold}>Dummy</span> Room Nights
-      </p>
-      <p className={LineChartStyles.line}>
-        <span className={LineChartStyles.bold}> IDR Random</span> Bookings Amount
-      </p>
-    </div>
+        <p className={LineChartStyles.line}>{currentIndexFocussed.label}</p>
+        <p className={LineChartStyles.date}>
+          <span className={LineChartStyles.bold}>{currentIndexFocussed.y}</span> Bookings
+        </p>
+        <p className={LineChartStyles.line}>
+          <span className={LineChartStyles.bold}>Dummy</span> Room Nights
+        </p>
+        <p className={LineChartStyles.line}>
+          <span className={LineChartStyles.bold}> IDR Random</span> Bookings Amount
+        </p>
+      </div>
     );
-  };``
+  }; ``
 
   return (
     <div className={LineChartStyles.container} ref={containerRef}>
